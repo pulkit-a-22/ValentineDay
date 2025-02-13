@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- This viewport tag makes the page render at the effective 25% scale so that it looks as it did when zoomed out -->
   <meta name="viewport" content="width=device-width, initial-scale=0.25, maximum-scale=1">
   <title>Drake x PND Album</title>
   
@@ -16,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Drake x PND Album">
   <meta name="twitter:description" content="Check out this exclusive album preview!">
-  <meta name="twitter:image" content="drake.jpg">
+  <meta name="twitter:image" content="drake.jpeg">
   
   <style>
     html, body {
@@ -35,12 +36,12 @@
     /* Title is now 5× bigger */
     h1 {
       margin: 20px;
-      font-size: 12.5em; /* previously 2.5em */
+      font-size: 12.5em;
       text-shadow: 2px 2px 4px #000;
     }
     /* Miss message is 5× bigger */
     #missMessage {
-      font-size: 7.5em; /* previously 1.5em */
+      font-size: 7.5em;
       color: #ff0;
       text-shadow: 1px 1px 2px #000;
       display: none;
@@ -80,7 +81,7 @@
     const player = document.getElementById('player');
     const missMessage = document.getElementById('missMessage');
     let score = 0, targetScore = 5;
-    // Increase kiss speed 2× faster (now 12 instead of 6)
+    // Kisses now move 2x faster (12 pixels per frame)
     const kissSpeed = 12;
     let kisses = [];
     let playerPos = { x: 20, y: gameContainer.clientHeight / 2 };
