@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Maze Challenge</title>
+  <title>Collect The Hearts!</title>
   <style>
     html, body {
       margin: 0; 
@@ -65,7 +65,7 @@
   </style>
 </head>
 <body>
-  <h1>Maze Challenge</h1>
+  <h1>Collect The Hearts!</h1>
   <div id="score">Hearts Collected: 0/3</div>
   <div id="mazeContainer"></div>
   <script>
@@ -146,7 +146,7 @@
       hearts.push(heart);
     });
     
-    const speed = 20;
+    const speed = 50;
     function rectIntersect(r1, r2) {
       return !(r2.left > r1.right ||
                r2.right < r1.left ||
