@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maze Challenge</title>
+  <style>
+    html, body {
+      margin: 0; 
+      padding: 0;
+      width: 100%; 
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      font-family: Arial, sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+    /* Title is 5× bigger */
+    h1 {
+      margin: 20px;
+      font-size: 12.5em; 
+    }
+    #score {
+      font-size: 1.8em;
+      margin: 10px;
+    }
+    /* Maze container (slightly smaller) */
+    #mazeContainer {
+      position: relative;
+      width: 80vw;
+      height: 80vh;
+      border: 5px solid #fff;
+      background: rgba(255,255,255,0.2);
+      overflow: hidden;
+      margin: 5vh auto;
+    }
+    /* Player (suhani) is now 3× bigger in the maze */
+    .player {
+      position: absolute;
+      width: 450px;
+      z-index: 2;
+    }
+    /* Walls remain the same */
+    .wall {
+      position: absolute;
+      background-color: rgba(255,255,255,0.8);
+      z-index: 1;
+    }
+    /* Hearts */
+    .heart {
+      position: absolute;
+      width: 100px;
+      z-index: 2;
+    }
+    /* lil munch text that follows the player */
+    #lilMunch {
+      position: absolute;
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 4em;
+      color: #ff0;
+      text-shadow: 2px 2px 4px #000;
+      pointer-events: none;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Maze Challenge</h1>
+  <div id="score">Hearts Collected: 0/3</div>
+  <div id="mazeContainer"></div>
+  <script>
+    const mazeContainer = document.getElementById('mazeContainer');
+    const scoreDiv = document.getElementById('score');
+    let collected = 0;
+    const totalHearts = 3;
+    
+    // Create enlarged player (suhani.png) at 450px wide.
+    const player = document.createElement('img');
+    player.src = "suhani.png";
+    player.className = "player";
+    let playerX = 50, playerY = 100;
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
+    mazeContainer.appendChild(player);
+    
+    // Create "lil munch" text that follows the player.
+    const lilMunch = document.createElement('div');
+    lilMunch.id = "lilMunch";
+    lilMunch.innerText = "lil munch";
+    mazeContainer.appendChild(lilMunch);
+    
+    // Function to update the lil munch text position relative to player.
+    function updateLilMunch() {
+      // Center above the player (adjust offsets as desired)
+      lilMunch.style.left = (playerX + player.offsetWidth/2 - 50) + "px";
+      lilMunch.style.top = (playerY - 40) + "px";
+    }
+    updateLilMunch();
+    
+    const containerWidth = mazeContainer.clientWidth;
+    const containerHeight = mazeContainer.clientHeight;
+    // Set a large gap: 80% of container height
+    const gapSize = containerHeight * 0.8;
+    const gapStart = (containerHeight - gapSize) / 2;
+    const gapEnd = gapStart + gapSize;
+    
+    // Spread 3 walls evenly: at 25%, 50%, and 75% of container width.
+    const wallXPositions = [ containerWidth * 0.25, containerWidth * 0.5, containerWidth * 0.75 ];
+    let mazeWalls = [];
+    wallXPositions.forEach(xPos => {
+      // Top segment of wall
+      const topWall = document.createElement('div');
+      topWall.className = "wall";
+      topWall.style.left = xPos + "px";
+      topWall.style.top = "0px";
+      topWall.style.width = "20px";
+      topWall.style.height = gapStart + "px";
+      mazeContainer.appendChild(topWall);
+      mazeWalls.push(topWall);
+      
+      // Bottom segment of wall
+      const bottomWall = document.createElement('div');
+      bottomWall.className = "wall";
+      bottomWall.style.left = xPos + "px";
+      bottomWall.style.top = gapEnd + "px";
+      bottomWall.style.width = "20px";
+      bottomWall.style.height = (containerHeight - gapEnd) + "px";
+      mazeContainer.appendChild(bottomWall);
+      mazeWalls.push(bottomWall);
+    });
+    
+    // Place hearts further apart.
+    const heartPositions = [
+      { left: containerWidth * 0.1, top: containerHeight * 0.2 },
+      { left: containerWidth * 0.5, top: containerHeight * 0.8 },
+      { left: containerWidth * 0.9 - 100, top: containerHeight * 0.6 }
+    ];
+    const hearts = [];
+    heartPositions.forEach(pos => {
+      const heart = document.createElement('img');
+      heart.src = "heart.gif";
+      heart.className = "heart";
+      heart.style.left = pos.left + "px";
+      heart.style.top = pos.top + "px";
+      mazeContainer.appendChild(heart);
+      hearts.push(heart);
+    });
+    
+    const speed = 20;
+    function rectIntersect(r1, r2) {
+      return !(r2.left > r1.right ||
+               r2.right < r1.left ||
+               r2.top > r1.bottom ||
+               r2.bottom < r1.top);
+    }
+    function getPlayerRect(x, y) {
+      return { left: x, top: y, right: x + player.offsetWidth, bottom: y + player.offsetHeight };
+    }
+    
+    document.addEventListener('keydown', e => {
+      let newX = playerX, newY = playerY;
+      if (e.key === "ArrowUp") newY -= speed;
+      else if (e.key === "ArrowDown") newY += speed;
+      else if (e.key === "ArrowLeft") newX -= speed;
+      else if (e.key === "ArrowRight") newX += speed;
+      
+      newX = Math.max(0, Math.min(newX, mazeContainer.clientWidth - player.offsetWidth));
+      newY = Math.max(0, Math.min(newY, mazeContainer.clientHeight - player.offsetHeight));
+      
+      const newRect = getPlayerRect(newX, newY);
+      let collision = false;
+      mazeWalls.forEach(wall => {
+        const wallRect = wall.getBoundingClientRect();
+        if (rectIntersect(newRect, wallRect)) collision = true;
+      });
+      
+      if (!collision) {
+        playerX = newX;
+        playerY = newY;
+        player.style.left = playerX + "px";
+        player.style.top = playerY + "px";
+        updateLilMunch();
+        
+        for (let i = hearts.length - 1; i >= 0; i--) {
+          const heartRect = hearts[i].getBoundingClientRect();
+          const playerRect = player.getBoundingClientRect();
+          if (rectIntersect(playerRect, heartRect)) {
+            mazeContainer.removeChild(hearts[i]);
+            hearts.splice(i, 1);
+            collected++;
+            scoreDiv.textContent = "Hearts Collected: " + collected + "/" + totalHearts;
+            if (collected === totalHearts) {
+              window.location.href = "congrats.html";
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

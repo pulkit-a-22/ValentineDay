@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Robber Challenge</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      text-align: center;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    #gameArea {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      margin: 20px auto;
+      border: 5px solid #fff;
+      background: rgba(255,255,255,0.2);
+    }
+    #robber {
+      position: absolute;
+      width: 150px;
+      right: -200px; /* start offscreen */
+      top: 200px;
+      transition: right 1s;
+    }
+    #suhani {
+      position: absolute;
+      width: 150px;
+      left: 50px;
+      top: 200px;
+    }
+    #heart {
+      position: absolute;
+      width: 50px;
+      left: 120px;
+      top: 100px;
+    }
+    #message {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+    #punchCount {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Robber Challenge</h1>
+  <p>Press SPACE to punch the robber!</p>
+  <div id="gameArea">
+    <img src="suhani.png" id="suhani" alt="Suhani">
+    <img src="robber.png" id="robber" alt="Robber">
+    <img src="heart.gif" id="heart" alt="Stolen Heart">
+  </div>
+  <div id="punchCount">Punches: 0/20</div>
+  <div id="message"></div>
+  <audio id="punchSound" src="punch.mp3"></audio>
+  <script>
+    const robber = document.getElementById('robber');
+    const punchCountDiv = document.getElementById('punchCount');
+    const messageDiv = document.getElementById('message');
+    const punchSound = document.getElementById('punchSound');
+    let punches = 0;
+    
+    // Animate robber entering the screen (stealing the heart)
+    setTimeout(() => {
+      robber.style.right = "50px";
+    }, 1000);
+    
+    // Remove the heart after the robber arrives
+    setTimeout(() => {
+      document.getElementById('heart').style.display = "none";
+    }, 2000);
+    
+    document.addEventListener('keydown', (e) => {
+      if(e.code === "Space") {
+        punches++;
+        punchSound.currentTime = 0;
+        punchSound.play();
+        punchCountDiv.textContent = "Punches: " + punches + "/20";
+        // Briefly shake the robber for feedback
+        robber.style.transform = "translateX(-10px)";
+        setTimeout(() => {
+          robber.style.transform = "translateX(0)";
+        }, 100);
+        if(punches >= 20) {
+          messageDiv.textContent = "Valentine's Day Saved!";
+        }
+      }
+    });
+  </script>
+</body>
+</html>

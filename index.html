@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drake x PND Album</title>
+  
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:title" content="Drake x PND Album">
+  <meta property="og:description" content="Check out this exclusive album preview!">
+  <meta property="og:image" content="drake.jpeg">
+  <meta property="og:url" content="https://b285-50-200-239-142.ngrok-free.app">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Drake x PND Album">
+  <meta name="twitter:description" content="Check out this exclusive album preview!">
+  <meta name="twitter:image" content="drake.jpg">
+  
+  <style>
+    html, body {
+      margin: 0; 
+      padding: 0;
+      width: 100%; 
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      color: #fff;
+      text-align: center;
+    }
+    /* Title is now 5× bigger */
+    h1 {
+      margin: 20px;
+      font-size: 12.5em; /* previously 2.5em */
+      text-shadow: 2px 2px 4px #000;
+    }
+    /* Miss message is 5× bigger */
+    #missMessage {
+      font-size: 7.5em; /* previously 1.5em */
+      color: #ff0;
+      text-shadow: 1px 1px 2px #000;
+      display: none;
+      margin-bottom: 10px;
+    }
+    #gameContainer {
+      position: relative;
+      width: 100vw;
+      height: calc(100vh - 80px);
+      border: 5px solid #fff;
+      background: rgba(255,255,255,0.2);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    /* Pulkit and Suhani are now 2.5× bigger: from 150px to 375px */
+    .player, .source {
+      position: absolute;
+      width: 375px;
+    }
+    .kiss {
+      position: absolute;
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Help me catch your kisses!</h1>
+  <div id="missMessage">Hey, Stop Missing the Kisses</div>
+  <div id="gameContainer">
+    <!-- pulkit (controlled) on the left -->
+    <img src="pulkit.png" id="player" class="player" style="left:20px; top:50%;">
+    <!-- suhani (static) on the right -->
+    <img src="suhani.png" id="source" class="source" style="right:0; top:50%;">
+  </div>
+  <script>
+    const gameContainer = document.getElementById('gameContainer');
+    const player = document.getElementById('player');
+    const missMessage = document.getElementById('missMessage');
+    let score = 0, targetScore = 5;
+    // Increase kiss speed 2× faster (now 12 instead of 6)
+    const kissSpeed = 12;
+    let kisses = [];
+    let playerPos = { x: 20, y: gameContainer.clientHeight / 2 };
+    const playerSpeed = 20;
+    
+    document.addEventListener('keydown', e => {
+      if (e.key === "ArrowUp") playerPos.y = Math.max(0, playerPos.y - playerSpeed);
+      if (e.key === "ArrowDown") playerPos.y = Math.min(gameContainer.clientHeight - player.offsetHeight, playerPos.y + playerSpeed);
+      if (e.key === "ArrowLeft") playerPos.x = Math.max(0, playerPos.x - playerSpeed);
+      if (e.key === "ArrowRight") playerPos.x = Math.min(gameContainer.clientWidth - player.offsetWidth, playerPos.x + playerSpeed);
+      player.style.top = playerPos.y + "px";
+      player.style.left = playerPos.x + "px";
+    });
+    
+    function showMissMessage() {
+      missMessage.style.display = "block";
+      setTimeout(() => { missMessage.style.display = "none"; }, 2000);
+    }
+    
+    function createKiss() {
+      const kiss = document.createElement('img');
+      kiss.src = "kiss.gif";
+      kiss.className = "kiss";
+      kiss.style.left = gameContainer.clientWidth + "px";
+      kiss.style.top = Math.random() * (gameContainer.clientHeight - 100) + "px";
+      gameContainer.appendChild(kiss);
+      kisses.push(kiss);
+    }
+    
+    function isColliding(el1, el2) {
+      const r1 = el1.getBoundingClientRect(),
+            r2 = el2.getBoundingClientRect();
+      return !(r1.right < r2.left || r1.left > r2.right ||
+               r1.bottom < r2.top || r1.top > r2.bottom);
+    }
+    
+    function gameLoop() {
+      for (let i = kisses.length - 1; i >= 0; i--) {
+        const kiss = kisses[i];
+        let currentLeft = parseFloat(kiss.style.left);
+        kiss.style.left = (currentLeft - kissSpeed) + "px";
+        if (isColliding(player, kiss)) {
+          gameContainer.removeChild(kiss);
+          kisses.splice(i, 1);
+          score++;
+          if (score >= targetScore) window.location.href = "maze.html";
+        } else if (currentLeft + kiss.offsetWidth < 0) {
+          gameContainer.removeChild(kiss);
+          kisses.splice(i, 1);
+          showMissMessage();
+        }
+      }
+      requestAnimationFrame(gameLoop);
+    }
+    
+    setInterval(createKiss, 1500);
+    gameLoop();
+  </script>
+</body>
+</html>
