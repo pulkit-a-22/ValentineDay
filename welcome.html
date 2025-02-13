@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tricked You!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=0.25, maximum-scale=1">
   <style>
-    /* Center the message on the screen */
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
       height: 100%;
-      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
       color: #fff;
       font-family: 'Comic Sans MS', cursive;
     }
     h1 {
-      font-size: 5em;
+      font-size: 7em;
     }
-    /* Hidden preloader container */
+    /* Preload container (hidden) */
     .preload {
       display: none;
     }
@@ -28,14 +28,13 @@
 </head>
 <body>
   <h1>tricked you!</h1>
-
-  <!-- Hidden container for preloading images -->
+  <!-- Preload images so icons load quickly throughout the site -->
   <div class="preload">
     <img src="pulkit.png" alt="Pulkit">
     <img src="suhani.png" alt="Suhani">
     <img src="kiss.gif" alt="Kiss">
     <img src="heart.gif" alt="Heart">
-    <img src="drake.jpg" alt="Drake">
+    <img src="drake.jpeg" alt="Drake">
     <img src="Subject.png" alt="Subject">
     <img src="Subject2.png" alt="Subject2">
     <img src="Subject3.png" alt="Subject3">
@@ -49,12 +48,9 @@
     <img src="gif5.gif" alt="Gif5">
     <img src="gif6.gif" alt="Gif6">
   </div>
-
   <script>
-    // Wait 3 seconds then redirect to index.html
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
+    // After 3 seconds, redirect to the main game (index.html)
+    setTimeout(() => { window.location.href = "index.html"; }, 3000);
   </script>
 </body>
 </html>
